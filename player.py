@@ -25,16 +25,28 @@ class Player(pygame.sprite.Sprite):
         # timers
         self.timers = {
             'tool use': Timer(350, self.use_tool),
-            'tool switch': Timer(200)
+            'tool switch': Timer(200),
+            'seed use': Timer(350, self.use_seed),
+            'seed switch': Timer(200)
         }
 
         # tools
         self.tools = ['hoe', 'axe', 'water']
         self.tool_index = 0
         self.selected_tool = self.tools[self.tool_index]
+
+        # seeds
+        self.seeds = ['corn', 'tomato']
+        self.seed_index = 0
+        self.selected_seed = self.seeds[self.seed_index]
     
     def use_tool(self):
-        print(self.selected_tool)
+        # print(self.selected_tool)
+        pass
+
+    def use_seed(self):
+        # print(self.selected_seed)
+        pass
 
     def import_assets(self):
         self.animations = {'up': [],'down': [],'left': [],'right': [],
@@ -46,7 +58,7 @@ class Player(pygame.sprite.Sprite):
         for animation in self.animations.keys():
             full_path = 'graphics\\character\\' + animation
             self.animations[animation] = import_folder(full_path)
-        print(self.animations)
+        # print(self.animations)
 
     def animate(self, dt):
         self.frame_index += 4*dt
@@ -97,7 +109,24 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.tool_index = 0
                 self.selected_tool = self.tools[self.tool_index]
+            
+            # seed use
+            if keys[pygame.K_LCTRL]:
+                # timer for seed use
+                self.timers['seed use'].activate() 
+                self.direction = pygame.math.Vector2()
+                self.frame_index = 0
+                print("use seed")
 
+            # change seed
+            if keys[pygame.K_e] and not self.timers['seed switch'].active:
+                self.timers['seed switch'].activate()
+                if self.seed_index < len(self.seeds) - 1:
+                    self.seed_index += 1
+                else:
+                    self.seed_index = 0
+                self.selected_seed = self.seeds[self.seed_index]
+                print(self.selected_seed)
     
     def get_status(self):
         
